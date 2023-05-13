@@ -79,13 +79,13 @@ app.get("/players/:playerId/", async (request, response) => {
 });
 
 app.put("/players/:playerId/", async (request, response) => {
-  const { playerId, playerName } = request.body;
-
+  const { playerName } = request.body;
+  const { playerId } = request.params;
   const updateMovieQuery = `
             UPDATE
               player_details
             SET
-              player_id = ${playerId},
+              player_id = '${playerId}',
               player_name = '${playerName}'
             WHERE
               player_id = ${playerId};`;
@@ -128,11 +128,11 @@ app.get("/matches/:matchId/players/", async (request, response) => {
   const { matchId } = request.params;
   const getDirectorMoviesQuery = `
     SELECT
-     player_id,player_name
+     *
     FROM
       player_details natural join player_match_score
     WHERE
-      match_id='${matchId}';`;
+      match_id= ${matchId};`;
   const moviesArray = await database.all(getDirectorMoviesQuery);
   response.send(
     moviesArray.map((eachMovie) =>
